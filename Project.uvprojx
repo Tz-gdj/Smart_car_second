@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Hardware;.\Start;.\System;.\User;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\FreeRTOS\Common\drivers\ST\STM32F10xFWLib\inc;.\FreeRTOS\Common\include</IncludePath>
+              <IncludePath>.\Library;.\Hardware;.\Start;.\System;.\User;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\FreeRTOS\Common\drivers\ST\STM32F10xFWLib\inc;.\FreeRTOS\Common\include;.\FreeRTOS\User</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -741,6 +741,21 @@
               <FileName>port.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\FreeRTOS\portable\RVDS\ARM_CM3\port.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FreeRTOS/User</GroupName>
+          <Files>
+            <File>
+              <FileName>MyTask.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FreeRTOS\User\MyTask.c</FilePath>
+            </File>
+            <File>
+              <FileName>MyTask.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\FreeRTOS\User\MyTask.h</FilePath>
             </File>
           </Files>
         </Group>

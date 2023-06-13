@@ -5,6 +5,8 @@ void Motor_Init()
 {
     TIM3_PWM_Init();
 
+    RCC_APB2PeriphClockCod(RCC_APB2Periph_GPIOA, ENABLE);
+
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
@@ -27,20 +29,13 @@ void CarBackward(void)
 
 
 /* 左右轮, left,right: 0-100 */
-void CarLeft(int left, int right)
+void CarContorl(int left, int right)
 {   
     CarForward();
     TIM_SetCompare1(TIM3, left);
     TIM_SetCompare2(TIM3, right);
 }
 
-/* 左右轮, left,right: 0-100 */
-void CarRight(int left, int right)
-{   
-    CarForward();
-    TIM_SetCompare1(TIM3, left);
-    TIM_SetCompare2(TIM3, right);
-}
 
 /* 左右轮, left,right: 0-100 */
 void CarBackoff(int left, int right)
