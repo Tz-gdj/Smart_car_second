@@ -27,6 +27,10 @@ void CarBackward(void)
         GPIO_ResetBits(GPIOA, GPIO_Pin_4 | GPIO_Pin_3);
 }
 
+void CarStop(void)
+{
+    GPIO_ResetBits(GPIOA, GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5);
+}
 
 /* 左右轮, left,right: 0-100 */
 void CarContorl(int left, int right)
@@ -44,3 +48,4 @@ void CarBackoff(int left, int right)
     TIM_SetCompare1(TIM3, left);
     TIM_SetCompare2(TIM3, right);
 }
+

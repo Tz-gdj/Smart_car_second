@@ -3,5 +3,6 @@
 
 
 void TIM3_PWM_Init(void);
+void TIM2_PWM_Init(void);
 
 #endif

@@ -4,6 +4,7 @@
 void Motor_Init();
 void CarForward(void);
 void CarBackward(void);
+void CarStop(void);
 void CarContorl(int left, int right);
 void CarBackoff(int left, int right);
 #endif

@@ -12,6 +12,8 @@
 /* Hardware */
 #include "Motor.h"
 #include "IRSensor.h"
+#include "UltrasonicSensor.h"
+#include "Servo.h"
 
 static void prvSetupHardware( void );
 
@@ -35,16 +37,18 @@ int main(void)
 	
 	prvSetupHardware();
 
+	ServoMid();
+
     EventGroupHandle = xEventGroupCreate();
 
     xTaskCreate(vForwardTask, "Forward", 1000, NULL, 1, NULL);
     xTaskCreate(vLeftTask, "Left", 1000, NULL, 1, NULL);
     xTaskCreate(vRightTask, "Right", 1000, NULL, 1, NULL);
     xTaskCreate(vTractionTask, "IRsensor", 1000, NULL, 1, NULL);
-    xTaskCreate(超声波侦测task, "超声波", 1000, NULL, 1, NULL);
-    xTaskCreate(蓝牙控制task, "蓝牙", 1000, NULL, 4, NULL);
-    xTaskCreate(超声波直行task, "超声波直行", 1000, NULL, 1, NULL);\
-    xTaskCreate(前方有障碍_停车task, "停车", 1000, NULL, 2, NULL);
+    xTaskCreate(vAvoidTask, "Avoid", 1000, NULL, 1, NULL);
+    xTaskCreate(vAvoidForwardTask, "AvoidForward", 1000, NULL, 1, NULL);
+    xTaskCreate(vAvoidStopTask, "AvoidStop", 1000, NULL, 2, NULL);
+	xTaskCreate(蓝牙控制task, "蓝牙", 1000, NULL, 4, NULL);
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -60,9 +64,11 @@ int main(void)
 
 static void prvSetupHardware( void )
 {
-	TIM3_PWM_Init();
 	Motor_Init();
 	IRSensor_Init();
+	UltrasonicSensor_Init();
+	Servo_Init();
+	
 }
 
 
@@ -80,6 +86,7 @@ void vTractionTask(void)
 	int IRsensor_right = 0;
     while(1)
     {
+		/* 选择小车行动模式 */
         IRsensor_left = IRSensor_Left();
         IRsensor_right = IRSensor_Right();
         if(IRsensor_left == 0 & IRsensor_right == 0)
@@ -114,7 +121,7 @@ void vForwardTask (void)
 void vLeftTask ()
 {
 	int left, right;
-	left = 0;
+	left = 20;
 	right = 80;
     while(1)
     {
@@ -128,7 +135,7 @@ void vRightTask (void)
 {
 	int left, right;
 	left = 80;
-	right = 0;
+	right = 20;
     while(1)
     {
         xEventGroupWaitBits(EventGroupHandle, Right | Traction, Right, pdTRUE, portMAX_DELAY);
@@ -145,62 +152,80 @@ void vRightTask (void)
  	避障
 */
 
-void 超声波侦测task (void)
+void vAvoidTask (void)
 {
+	float length = 0 ;
     while(1)
     {
         xEventGroupWaitBits(EventGroupHandle, Avoid, pdFALSE, pdTRUE, portMAX_DELAY);
 
-        if()
+		length = Get_UTSensorValue();
+        if( length < 30)
         {
-            GPIO_WriteBit(1) = 1;
-            delay_us(20);
-            GPIO_WriteBit(1) = 0;
-
-            while(GPIO_ReadInputDataBit(GPIOB, GPIO_Pin_9) == RESET);
-            
             xEventGroupSetBits(EventGroupHandle, UT_Stop);
         }
     }
 }
 
-void 超声波直行task(void)
+void vAvoidForwardTask(void)
 {
+	int left, right;
+	left = 80;
+	right = 80;
     while(1)
     {
-        左前轮(100);
-        右前轮(100);
         xEventGroupWaitBits(EventGroupHandle, Avoid, pdFALSE, pdTRUE, portMAX_DELAY);
+		
+		CarContorl(left, right);
     }
 }
 
 
-void 前方有障碍_停车task(void)
+void vAvoidStopTask(void)
 {
+	float UT_left = 0;
+	float UT_right = 0; 
+	float UT_middle = 0;
+	int left = 80;
+	int right = 80;
+	int left_big = 60;
+	int right_big = 60;
+	int left_mid = 40;
+	int right_mid = 40;
+	int left_small = 20;
+	int right_small = 20;
     while(1)
     {
         xEventGroupWaitBits(EventGroupHandle, UT_Stop, pdTRUE, pdTRUE, portMAX_DELAY);
-        int x,y,z;
-        int left, right;
-        x = UT_Distance();
-        云台左转();
-        y = UT_Distance();
-        云台右转();
-        z = UT_Distance();
-        if(x < 10)
+
+		/* 停车并后退一段距离 */
+		CarStop();
+		Delay_ms(100);
+		CarBackoff(left, right);
+		Delay_ms(500); 
+
+		/* 云台左右扫描，并选择转弯模式 */
+        UT_middle = Get_UTSensorValue();
+        ServoLeft();
+        UT_left = Get_UTSensorValue();
+        ServoRight();
+        UT_right = Get_UTSensorValue();
+		ServoMid();
+
+        if(UT_middle < 10)
         {
-            if(y > z) 左大转();
-            else 右大转();
+            if(UT_left > UT_right) CarContorl(left, right_small);
+            else CarContorl(left_small, right);
         } 
-        else if(x < 20)
+        else if(UT_middle < 20)
         {
-            if(y > z) 左中转();
-            else 右中转();
+            if(UT_left > UT_right) CarContorl(left, right_mid);
+            else CarContorl(left_mid, right);
         }
         else
         {
-            if(y > z) 左小转();
-            else 右小转();
+            if(UT_left > UT_right) CarContorl(left, right_small);
+            else CarContorl(left_small, right);
         }
     }
 }

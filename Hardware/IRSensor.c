@@ -7,7 +7,7 @@ void IRSensor_Init(void)
 
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9 | GPIO_Pin_10;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11 | GPIO_Pin_12;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
@@ -15,7 +15,7 @@ void IRSensor_Init(void)
 int IRSensor_Left(void)
 {
     int input = 0;
-    input = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_9);
+    input = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_11);
 
     return input;
 }
@@ -23,7 +23,7 @@ int IRSensor_Left(void)
 int IRSensor_Right(void)
 {
     int input = 0;
-    input = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_10);
+    input = GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_12);
 
     return input;
 }
