@@ -14,6 +14,7 @@
 #include "IRSensor.h"
 #include "UltrasonicSensor.h"
 #include "Servo.h"
+#include "OLED.h"
 
 static void prvSetupHardware( void );
 
@@ -49,6 +50,7 @@ int main(void)
     xTaskCreate(vAvoidForwardTask, "AvoidForward", 1000, NULL, 1, NULL);
     xTaskCreate(vAvoidStopTask, "AvoidStop", 1000, NULL, 2, NULL);
 	xTaskCreate(蓝牙控制task, "蓝牙", 1000, NULL, 4, NULL);
+	xTaskCreate(vOLEDTask, "OLED", 1000, NULL, 1, NULL);
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -68,9 +70,17 @@ static void prvSetupHardware( void )
 	IRSensor_Init();
 	UltrasonicSensor_Init();
 	Servo_Init();
-	
+	OLED_Start();
 }
 
+
+/**********************************************************************
+  OLED
+*/
+void vOLEDTask(void)
+{
+
+}
 
 
 /*********************************************************************
@@ -92,14 +102,19 @@ void vTractionTask(void)
         if(IRsensor_left == 0 & IRsensor_right == 0)
         {
             xEventGroupSetBits(EventGroupHandle, Forward);
+	
+			/*显示汽车执行逻辑*/
+			OLED模式设置(); 
         }
         else if(IRsensor_left == 1 & IRsensor_right == 0)
         {
             xEventGroupSetBits(EventGroupHandle, Left);
+			OLED模式设置();
         }
         else if(IRsensor_left == 0 & IRsensor_right == 1)
         {
             xEventGroupSetBits(EventGroupHandle, Right);
+			OLED模式设置();
         }
     }
 }
@@ -163,6 +178,9 @@ void vAvoidTask (void)
         if( length < 30)
         {
             xEventGroupSetBits(EventGroupHandle, UT_Stop);
+
+			/*显示汽车执行逻辑*/
+			OLED模式设置(); 
         }
     }
 }
@@ -214,18 +232,54 @@ void vAvoidStopTask(void)
 
         if(UT_middle < 10)
         {
-            if(UT_left > UT_right) CarContorl(left, right_small);
-            else CarContorl(left_small, right);
+            if(UT_left > UT_right) 
+			{
+				CarContorl(left, right_small);
+				
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
+            else 
+			{
+				CarContorl(left_small, right);
+
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
         } 
         else if(UT_middle < 20)
         {
-            if(UT_left > UT_right) CarContorl(left, right_mid);
-            else CarContorl(left_mid, right);
+            if(UT_left > UT_right) 
+			{
+				CarContorl(left, right_mid);
+
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
+            else 
+			{
+				CarContorl(left_mid, right);
+
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
         }
         else
         {
-            if(UT_left > UT_right) CarContorl(left, right_small);
-            else CarContorl(left_small, right);
+            if(UT_left > UT_right) 
+			{
+				CarContorl(left, right_small);
+
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
+            else 
+			{
+				CarContorl(left_small, right);
+
+				/*显示汽车执行逻辑*/
+				OLED模式设置(); 
+			}
         }
     }
 }
