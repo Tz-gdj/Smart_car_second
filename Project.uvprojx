@@ -226,7 +226,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <RoSelD>3</RoSelD>
@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.\Library;.\Hardware;.\Start;.\System;.\User;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\FreeRTOS\Common\drivers\ST\STM32F10xFWLib\inc;.\FreeRTOS\Common\include;.\FreeRTOS\User</IncludePath>
+              <IncludePath>.\Library;.\Hardware;.\Start;.\System;.\User;.\FreeRTOS\include;.\FreeRTOS\portable\RVDS\ARM_CM3;.\FreeRTOS\Common\drivers\ST\STM32F10xFWLib\inc;.\FreeRTOS\Common\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -745,21 +745,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>FreeRTOS/User</GroupName>
-          <Files>
-            <File>
-              <FileName>MyTask.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\FreeRTOS\User\MyTask.c</FilePath>
-            </File>
-            <File>
-              <FileName>MyTask.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\FreeRTOS\User\MyTask.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Hardware</GroupName>
           <Files>
             <File>
@@ -781,6 +766,51 @@
               <FileName>PWM.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\Hardware\PWM.h</FilePath>
+            </File>
+            <File>
+              <FileName>IRSensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\IRSensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>IRSensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\IRSensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>UltrasonicSensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\UltrasonicSensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>UltrasonicSensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\UltrasonicSensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>Servo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Servo.c</FilePath>
+            </File>
+            <File>
+              <FileName>Servo.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\Servo.h</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\OLED.c</FilePath>
+            </File>
+            <File>
+              <FileName>OLED.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\OLED.h</FilePath>
+            </File>
+            <File>
+              <FileName>OLED_Font.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Hardware\OLED_Font.h</FilePath>
             </File>
           </Files>
         </Group>

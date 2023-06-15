@@ -69,7 +69,7 @@ float Get_UTSensorValue(void)
         length = (count + (overcount * 100)) / 58.0;    // us/58 = 厘米
 
         sum += length;
-        TIM1->CNT = 0;
+        TIM_SetCounter(TIM1, 0);
         overcount = 0;
         Delay_ms(10);
     }          

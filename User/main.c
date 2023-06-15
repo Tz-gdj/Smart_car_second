@@ -50,7 +50,10 @@ int main(void)
     xTaskCreate(vAvoidForwardTask, "AvoidForward", 1000, NULL, 1, NULL);
     xTaskCreate(vAvoidStopTask, "AvoidStop", 1000, NULL, 2, NULL);
 	xTaskCreate(蓝牙控制task, "蓝牙", 1000, NULL, 4, NULL);
-	xTaskCreate(vOLEDTask, "OLED", 1000, NULL, 1, NULL);
+	xTaskCreate(vOLEDAvoidTask, "OLED_Avoid_traction", 1000, NULL, 1, NULL);
+	xTaskCreate(vOLEDTractionStopTask, "OLED_TractionStop", 1000, NULL, 2, NULL);
+	xTaskCreate(vOLEDBluetoothTask, "OLED_Bluetooth", 1000, NULL, 4, NULL);
+	
 
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -90,12 +93,15 @@ void vOLEDTask(void)
 
 void vTractionTask(void)
 {
-    xEventGroupWaitBits(EventGroupHandle, Traction, pdFALSE, pdTRUE, portMAX_DELAY);
 
+	const TickType_t TaskToWait = pdMS_TO_TICKS( 10UL );  // 阻塞 10ms 给空闲任务（不需要那么高的精度）
     int IRsensor_left = 0;
 	int IRsensor_right = 0;
+
     while(1)
     {
+		xEventGroupWaitBits(EventGroupHandle, Traction, pdFALSE, pdTRUE, portMAX_DELAY);
+
 		/* 选择小车行动模式 */
         IRsensor_left = IRSensor_Left();
         IRsensor_right = IRSensor_Right();
@@ -116,17 +122,20 @@ void vTractionTask(void)
             xEventGroupSetBits(EventGroupHandle, Right);
 			OLED模式设置();
         }
+		vTaskDelay(TaskToWait);
     }
+
 }
 
 void vForwardTask (void)
 {
+	
 	int left, right;
 	left = 50;
 	right = 50;
     while(1)
     {
-       xEventGroupWaitBits(EventGroupHandle, Forward | Traction, Forward, pdTRUE, portMAX_DELAY);
+       xEventGroupWaitBits(EventGroupHandle, Forward | Traction, pdTRUE, pdTRUE, portMAX_DELAY);
 	
 	   CarContorl(left, right);
     }
@@ -140,7 +149,7 @@ void vLeftTask ()
 	right = 80;
     while(1)
     {
-        xEventGroupWaitBits(EventGroupHandle, Left  | Traction, Left, pdTRUE, portMAX_DELAY);
+        xEventGroupWaitBits(EventGroupHandle, Left  | Traction, pdTRUE, pdTRUE, portMAX_DELAY);
 		
 		CarContorl(left, right);
     }
@@ -153,7 +162,7 @@ void vRightTask (void)
 	right = 20;
     while(1)
     {
-        xEventGroupWaitBits(EventGroupHandle, Right | Traction, Right, pdTRUE, portMAX_DELAY);
+        xEventGroupWaitBits(EventGroupHandle, Right | Traction, pdTRUE, pdTRUE, portMAX_DELAY);
 
 		CarContorl(left, right);
 
@@ -170,6 +179,8 @@ void vRightTask (void)
 void vAvoidTask (void)
 {
 	float length = 0 ;
+	const TickType_t TaskToWait = pdMS_TO_TICKS( 10UL );  // 阻塞 10ms 给空闲任务（不需要那么高的精度）
+
     while(1)
     {
         xEventGroupWaitBits(EventGroupHandle, Avoid, pdFALSE, pdTRUE, portMAX_DELAY);
@@ -181,7 +192,10 @@ void vAvoidTask (void)
 
 			/*显示汽车执行逻辑*/
 			OLED模式设置(); 
+
         }
+
+		vTaskDelay(TaskToWait);
     }
 }
 
@@ -192,7 +206,7 @@ void vAvoidForwardTask(void)
 	right = 80;
     while(1)
     {
-        xEventGroupWaitBits(EventGroupHandle, Avoid, pdFALSE, pdTRUE, portMAX_DELAY);
+        xEventGroupWaitBits(EventGroupHandle, Avoid, pdTRUE, pdTRUE, portMAX_DELAY);
 		
 		CarContorl(left, right);
     }
@@ -318,7 +332,19 @@ void 蓝牙控制task (void)
 
 }
 
-void OLED_task(void)
+void vOLEDAvoidTask(void)
 {
+	// 应该是避障 + 循迹 1 优先级的任务显示 if判断
     /* 使用Queue传数据 */
+	xEventGroupWaitBits(EventGroupHandle, Traction, pdFALSE, pdTRUE, portMAX_DELAY);
+}
+
+void vOLEDTractionStopTask(void)
+{
+	xEventGroupWaitBits(EventGroupHandle, UT_Stop, pdFALSE, pdTRUE, portMAX_DELAY);
+}
+
+void vOLEDBluetoothTask(void)
+{
+	xEventGroupWaitBits(EventGroupHandle, Bluetooth, pdFALSE, pdTRUE, portMAX_DELAY);
 }

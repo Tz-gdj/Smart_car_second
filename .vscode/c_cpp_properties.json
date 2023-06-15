@@ -12,7 +12,6 @@
                 "e:\\STM32project\\Smart_car_second\\Smart_car_second\\FreeRTOS\\portable\\RVDS\\ARM_CM3",
                 "e:\\STM32project\\Smart_car_second\\Smart_car_second\\FreeRTOS\\Common\\drivers\\ST\\STM32F10xFWLib\\inc",
                 "e:\\STM32project\\Smart_car_second\\Smart_car_second\\FreeRTOS\\Common\\include",
-                "e:\\STM32project\\Smart_car_second\\Smart_car_second\\FreeRTOS\\User",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw",
                 "e:\\STM32project\\Smart_car_second\\Smart_car_second\\FreeRTOS",
